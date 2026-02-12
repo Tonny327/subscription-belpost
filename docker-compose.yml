@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend/subscription-service
+    image: subscription-service
+    ports:
+      - "8082:8082"
+
