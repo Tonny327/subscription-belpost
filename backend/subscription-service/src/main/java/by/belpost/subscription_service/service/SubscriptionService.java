@@ -6,6 +6,9 @@ import by.belpost.subscription_service.dto.SubscriptionResponseDto;
 import by.belpost.subscription_service.entity.Publication;
 import by.belpost.subscription_service.entity.Subscription;
 import by.belpost.subscription_service.enums.SubscriptionStatus;
+import by.belpost.subscription_service.exception.InvalidSubscriptionPeriodException;
+import by.belpost.subscription_service.exception.PublicationNotFoundException;
+import by.belpost.subscription_service.exception.SubscriptionNotFoundException;
 import by.belpost.subscription_service.repository.PublicationRepository;
 import by.belpost.subscription_service.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +28,20 @@ public class SubscriptionService {
 
     public SubscriptionResponseDto createSubscription(SubscriptionRequestDto request) {
         Publication publication = publicationRepository.findById(request.getPublicationId())
-                .orElseThrow(() -> new RuntimeException("Publication not found with id " + request.getPublicationId()));
+                .orElseThrow(() -> new PublicationNotFoundException(request.getPublicationId()));
 
         int months = resolveMonths(request.getPeriod());
+        double discountMultiplier = switch (months) {
+            case 1 -> 1.0;
+            case 3 -> 0.97;
+            case 6 -> 0.95;
+            case 12 -> 0.90;
+            default -> 1.0;
+        };
 
         LocalDate startDate = request.getStartDate();
         LocalDate endDate = startDate.plusMonths(months);
-        Double totalPrice = publication.getPrice() * months;
+        Double totalPrice = publication.getPrice() * months * discountMultiplier;
 
         Subscription subscription = Subscription.builder()
                 .publication(publication)
@@ -51,7 +61,7 @@ public class SubscriptionService {
 
     public SubscriptionResponseDto getById(Long id) {
         Subscription subscription = subscriptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Subscription not found with id " + id));
+                .orElseThrow(() -> new SubscriptionNotFoundException(id));
         return toResponseDto(subscription);
     }
 
@@ -62,7 +72,7 @@ public class SubscriptionService {
             case "3 месяца", "3 мес" -> 3;
             case "6 месяцев", "6 мес" -> 6;
             case "1 год", "год" -> 12;
-            default -> throw new RuntimeException("Unsupported subscription period: " + period);
+            default -> throw new InvalidSubscriptionPeriodException(period);
         };
     }
 

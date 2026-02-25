@@ -57,6 +57,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(10.0)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/mir-nauki.png")
                 .categories(Set.of(science))
                 .build();
 
@@ -66,6 +67,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(8.5)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/kulinarnye-shedevry.png")
                 .categories(Set.of(cooking))
                 .build();
 
@@ -75,6 +77,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(5.0)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/skanvordy-xl.png")
                 .categories(Set.of(crosswords))
                 .build();
 
@@ -84,6 +87,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(9.0)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/planeta-zemlya.png")
                 .categories(Set.of(world))
                 .build();
 
@@ -102,6 +106,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(4.0)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/umnaya-logika.png")
                 .categories(Set.of(logic))
                 .build();
 
@@ -129,6 +134,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(3.5)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/raskraski-nakleyki.png")
                 .categories(Set.of(coloring))
                 .build();
 
@@ -138,6 +144,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(2.0)
                 .period("1 месяц")
                 .type(PublicationType.NEWSPAPER)
+                .imageUrl("https://example.com/images/publications/utrennie-novosti.png")
                 .categories(Set.of(adult))
                 .build();
 
@@ -166,6 +173,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(7.2)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/domashniy-ochag.png")
                 .categories(Set.of(cooking, hobby))
                 .build();
 
@@ -211,6 +219,7 @@ public class DataInitializer implements CommandLineRunner {
                 .price(4.9)
                 .period("1 месяц")
                 .type(PublicationType.JOURNAL)
+                .imageUrl("https://example.com/images/publications/yunyy-issledovatel.png")
                 .categories(Set.of(child, science, logic))
                 .build();
 

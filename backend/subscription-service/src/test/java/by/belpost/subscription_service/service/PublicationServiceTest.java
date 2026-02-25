@@ -4,6 +4,7 @@ import by.belpost.subscription_service.dto.PublicationDto;
 import by.belpost.subscription_service.entity.Category;
 import by.belpost.subscription_service.entity.Publication;
 import by.belpost.subscription_service.enums.PublicationType;
+import by.belpost.subscription_service.exception.InvalidPublicationTypeException;
 import by.belpost.subscription_service.repository.PublicationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,7 +72,7 @@ class PublicationServiceTest {
     @Test
     void getAllPublications_invalidType_throws() {
         assertThatThrownBy(() -> publicationService.getAllPublications("UNKNOWN", null))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(InvalidPublicationTypeException.class)
                 .hasMessageContaining("Invalid publication type");
     }
 

@@ -4,6 +4,7 @@ import by.belpost.subscription_service.dto.PublicationDto;
 import by.belpost.subscription_service.entity.Category;
 import by.belpost.subscription_service.entity.Publication;
 import by.belpost.subscription_service.enums.PublicationType;
+import by.belpost.subscription_service.exception.InvalidPublicationTypeException;
 import by.belpost.subscription_service.repository.PublicationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class PublicationService {
         try {
             return PublicationType.valueOf(type.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException ex) {
-            throw new RuntimeException("Invalid publication type: " + type);
+            throw new InvalidPublicationTypeException(type);
         }
     }
 

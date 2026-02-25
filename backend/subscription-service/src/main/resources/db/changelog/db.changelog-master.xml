@@ -7,6 +7,10 @@
 
     <include file="db/changelog/changes/001-create-tables.sql"
              relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/002-create-cart-tables.sql"
+             relativeToChangelogFile="false"/>
+    <include file="db/changelog/changes/003-create-users-and-relations.sql"
+             relativeToChangelogFile="false"/>
 
 </databaseChangeLog>
 

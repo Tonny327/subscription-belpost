@@ -6,11 +6,13 @@ import by.belpost.subscription_service.entity.Publication;
 import by.belpost.subscription_service.entity.Subscription;
 import by.belpost.subscription_service.enums.PublicationType;
 import by.belpost.subscription_service.enums.SubscriptionStatus;
+import by.belpost.subscription_service.exception.InvalidSubscriptionPeriodException;
+import by.belpost.subscription_service.exception.PublicationNotFoundException;
+import by.belpost.subscription_service.exception.SubscriptionNotFoundException;
 import by.belpost.subscription_service.repository.PublicationRepository;
 import by.belpost.subscription_service.repository.SubscriptionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,11 +60,11 @@ class SubscriptionServiceTest {
         LocalDate start = LocalDate.of(2026, 2, 12);
 
         assertPeriod(start, "1 месяц", 1, 10.0);
-        assertPeriod(start, "3 месяца", 3, 30.0);
-        assertPeriod(start, "6 месяцев", 6, 60.0);
-        assertPeriod(start, "1 год", 12, 120.0);
+        assertPeriod(start, "3 месяца", 3, 29.1);
+        assertPeriod(start, "6 месяцев", 6, 57.0);
+        assertPeriod(start, "1 год", 12, 108.0);
         assertPeriod(start, "1 мес", 1, 10.0);
-        assertPeriod(start, "год", 12, 120.0);
+        assertPeriod(start, "год", 12, 108.0);
     }
 
     @Test
@@ -86,7 +89,7 @@ class SubscriptionServiceTest {
                 .build();
 
         assertThatThrownBy(() -> subscriptionService.createSubscription(request))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(InvalidSubscriptionPeriodException.class)
                 .hasMessageContaining("Unsupported subscription period");
     }
 
@@ -104,14 +107,23 @@ class SubscriptionServiceTest {
                 .build();
 
         assertThatThrownBy(() -> subscriptionService.createSubscription(request))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(PublicationNotFoundException.class)
                 .hasMessageContaining("Publication not found");
     }
 
     @Test
     void getById_returnsSubscription() {
+        Publication publication = Publication.builder()
+                .id(1L)
+                .title("Тест")
+                .price(10.0)
+                .period("1 месяц")
+                .type(PublicationType.JOURNAL)
+                .build();
+
         Subscription subscription = Subscription.builder()
                 .id(5L)
+                .publication(publication)
                 .customerName("Имя")
                 .customerPhone("+375291234567")
                 .customerEmail("test@example.com")
@@ -136,7 +148,7 @@ class SubscriptionServiceTest {
         when(subscriptionRepository.findById(5L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> subscriptionService.getById(5L))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(SubscriptionNotFoundException.class)
                 .hasMessageContaining("Subscription not found");
     }
 
@@ -150,17 +162,12 @@ class SubscriptionServiceTest {
                 .period(periodString)
                 .build();
 
-        ArgumentCaptor<Subscription> captor = ArgumentCaptor.forClass(Subscription.class);
+        SubscriptionResponseDto response = subscriptionService.createSubscription(request);
 
-        subscriptionService.createSubscription(request);
-
-        verify(subscriptionRepository).save(captor.capture());
-        Subscription saved = captor.getValue();
-
-        assertThat(saved.getStartDate()).isEqualTo(start);
-        assertThat(saved.getEndDate()).isEqualTo(start.plusMonths(expectedMonths));
-        assertThat(saved.getTotalPrice()).isEqualTo(expectedTotal);
-        assertThat(saved.getStatus()).isEqualTo(SubscriptionStatus.ACTIVE);
+        assertThat(response.getStartDate()).isEqualTo(start);
+        assertThat(response.getEndDate()).isEqualTo(start.plusMonths(expectedMonths));
+        assertThat(response.getTotalPrice()).isCloseTo(expectedTotal, within(0.0001));
+        assertThat(response.getStatus()).isEqualTo(SubscriptionStatus.ACTIVE);
     }
 }
 

@@ -26,8 +26,8 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = "publication")
-@ToString(exclude = "publication")
+@EqualsAndHashCode(exclude = {"publication", "user"})
+@ToString(exclude = {"publication", "user"})
 public class Subscription {
 
     @Id
@@ -37,6 +37,10 @@ public class Subscription {
     @ManyToOne
     @JoinColumn(name = "publication_id", nullable = false)
     private Publication publication;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(nullable = false)
     private String customerName;
