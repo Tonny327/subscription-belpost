@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bottom_nav_active">#2661fd</color>
+    <color name="bottom_nav_inactive">#BDBDBD</color>
+    <color name="primaryBlue">#007AFF</color>
+    <color name="chat_background">#F5F5F5</color>
+    <color name="blue">#2661fd</color>
+    <color name="red">#FF2400</color>
+    <color name="grey">#808080</color>
+    <!-- Design system palette -->
+    <color name="primary">#2661fd</color>
+    <color name="primaryDark">#1E4FD5</color>
+    <color name="primaryLight">#6E8FFF</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#616161</color>
+    <color name="textTertiary">#9E9E9E</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="primaryRipple">#802661fd</color>
+</resources>

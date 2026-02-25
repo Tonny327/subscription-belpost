@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Toolbar styled with centered title and primary background -->
+    <style name="PhilateliaToolbar" parent="@style/Widget.MaterialComponents.Toolbar">
+        <item name="titleCentered">true</item>
+        <item name="android:background">@color/primary</item>
+        <item name="titleTextColor">@color/onPrimary</item>
+        <item name="subtitleTextColor">@color/onPrimary</item>
+    </style>
+
+    <!-- Primary filled rounded button -->
+    <style name="PhilateliaButton" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- EditText with white fill and blue outline -->
+    <style name="PhilateliaEditText" parent="@style/Widget.MaterialComponents.TextInputEditText.FilledBox">
+        <item name="android:background">@drawable/bg_edittext</item>
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textColorHint">@color/primary</item>
+    </style>
+
+    <!-- CardView appearance -->
+    <style name="PhilateliaCardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+    </style>
+
+    <!-- Text appearances -->
+    <style name="TextAppearance.Philatelia.Heading" parent="@style/TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextAppearance.Philatelia.Body" parent="@style/TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="TextAppearance.Philatelia.Caption" parent="@style/TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/textSecondary</item>
+    </style>
+
+    <style name="ChatBubbleUser">
+        <item name="android:background">@drawable/bubble_user</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources> 

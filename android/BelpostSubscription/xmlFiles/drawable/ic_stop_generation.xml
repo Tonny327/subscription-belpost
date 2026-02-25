@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Blue circle background -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/blue" />
+            <size
+                android:width="48dp"
+                android:height="48dp" />
+        </shape>
+    </item>
+    <!-- White square stop icon inside -->
+    <item
+        android:width="16dp"
+        android:height="16dp"
+        android:gravity="center">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/white" />
+        </shape>
+    </item>
+</layer-list> 

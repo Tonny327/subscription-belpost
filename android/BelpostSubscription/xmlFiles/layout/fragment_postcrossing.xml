@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Форма регистрации -->
+        <LinearLayout
+            android:id="@+id/layout_registration_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <!-- Заголовок формы -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_form_section"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌍 Присоединяйтесь к Посткроссингу!"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/primary"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Создайте аккаунт для обмена открытками по всему миру"
+                    android:textSize="16sp"
+                    android:textColor="@color/textSecondary"
+                    android:lineSpacingExtra="2dp"/>
+            </LinearLayout>
+
+            <!-- Секция данных учетной записи -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_form_section"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_person"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Данные учетной записи"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="@color/textPrimary"/>
+                </LinearLayout>
+
+                <!-- Имя пользователя -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_input_field"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_person"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="12dp"/>
+
+                    <EditText
+                        android:id="@+id/et_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Имя пользователя"
+                        android:textSize="16sp"
+                        android:background="@android:color/transparent"
+                        android:paddingVertical="14dp"
+                        android:paddingEnd="16dp"/>
+                </LinearLayout>
+
+                <!-- Email -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_input_field"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_email"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="12dp"/>
+
+                    <EditText
+                        android:id="@+id/et_email"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Электронная почта"
+                        android:inputType="textEmailAddress"
+                        android:textSize="16sp"
+                        android:background="@android:color/transparent"
+                        android:paddingVertical="14dp"
+                        android:paddingEnd="16dp"/>
+                </LinearLayout>
+
+                <!-- Пароль -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_input_field">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_lock"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="12dp"/>
+
+                    <EditText
+                        android:id="@+id/et_password"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Пароль (не менее 6 символов)"
+                        android:inputType="textPassword"
+                        android:textSize="16sp"
+                        android:background="@android:color/transparent"
+                        android:paddingVertical="14dp"
+                        android:paddingEnd="16dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Секция местоположения -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_form_section"
+                android:padding="20dp"
+                android:layout_marginBottom="20dp"
+                android:elevation="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_location"
+                        android:layout_marginEnd="8dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Местоположение и адрес"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="@color/textPrimary"/>
+                </LinearLayout>
+
+                <!-- Страна -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_input_field"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_location"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="12dp"/>
+
+                    <Spinner
+                        android:id="@+id/spinner_country"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"/>
+                </LinearLayout>
+
+                <!-- Город -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_input_field"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_location"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="12dp"/>
+
+                    <Spinner
+                        android:id="@+id/spinner_city"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"/>
+                </LinearLayout>
+
+                <!-- Адрес -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:background="@drawable/bg_input_field">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_home"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginTop="14dp"/>
+
+                    <EditText
+                        android:id="@+id/et_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Почтовый адрес (включая ФИО)"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:maxLines="5"
+                        android:gravity="top"
+                        android:textSize="16sp"
+                        android:background="@android:color/transparent"
+                        android:paddingVertical="14dp"
+                        android:paddingEnd="16dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Кнопка регистрации -->
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="🚀 Присоединиться к Посткроссингу"
+                android:textSize="16sp"
+                android:textStyle="bold"    
+                android:background="@drawable/bg_button_rounded"
+                android:textColor="@color/white"
+                android:elevation="4dp"
+                android:layout_marginBottom="24dp"/>
+
+        </LinearLayout>
+
+        <!-- Отображение статистики -->
+        <LinearLayout
+            android:id="@+id/layout_stats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Статистика"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/tv_stats_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+        <!-- Опрос -->
+        <LinearLayout
+            android:id="@+id/layout_poll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+            <TextView
+                android:id="@+id/tv_poll_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <RadioGroup
+                android:id="@+id/rg_poll_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/btn_vote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Голосовать" />
+            <TextView
+                android:id="@+id/tv_poll_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <!-- Рекомендуемые марки -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Рекомендуемые марки для посткроссинга"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_stamps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Аналитика -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Аналитика лучших марок (2022-2001)"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/textPrimary"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Результаты ежегодных опросов филателистов"
+            android:textSize="14sp"
+            android:textColor="@color/textSecondary"
+            android:layout_marginBottom="12dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_analytics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:nestedScrollingEnabled="false"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

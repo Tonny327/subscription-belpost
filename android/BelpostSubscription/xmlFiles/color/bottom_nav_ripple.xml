@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Цвет ряби при нажатии -->
+    <item android:color="@color/primaryRipple" android:state_pressed="true" />
+    <!-- Прозрачный цвет для остальных состояний -->
+    <item android:color="@android:color/transparent" />
+</selector>
+

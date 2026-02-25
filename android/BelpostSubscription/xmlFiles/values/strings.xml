@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="product_image">Изображение товара</string>
+    <string name="title_activity_login">Вход</string>
+    <string name="title_activity_register">Регистрация</string>
+    <string name="title_activity_user_profile">Профиль пользователя</string>
+    <string name="prompt_email">Электронная почта</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти или зарегистрироваться</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="default_web_client_id">1020230572908-l6qlaokuesmpt15mho2of6a4o5b1a7df.apps.googleusercontent.com</string>
+    <string name="app_name">Philatelia</string>
+    <string name="stamp_image">Изображение марки</string>
+    <string name="add_to_cart">Добавить в корзину</string>
+    <string name="loading_error">Ошибка загрузки данных</string>
+    <string name="retry">Повторить</string>
+    <string name="no_stamps_found">Марки не найдены</string>
+    <string name="no_internet">Нет подключения к интернету</string>
+    <string name="user_profile">Профиль пользователя</string>
+    <string name="change_password">Сменить пароль</string>
+    <string name="order_history">История заказов</string>
+    <string name="feedback">Обратная связь</string>
+    <string name="logout">Выйти</string>
+    <string name="poll_count_format">Анкет: %d</string>
+    <string name="place_not_available_format">%d. Место - нет данных</string>
+    <string name="place_details_format">%d. %s (%d голоса) - %s</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_catalog"
+        android:icon="@drawable/ic_catalog_selector"
+        android:title="Каталоги" />
+
+    <item
+        android:id="@+id/nav_postcrossing"
+        android:icon="@drawable/ic_postcrossing_selector"
+        android:title="Посткроссинг" />
+
+    <item
+        android:id="@+id/nav_helper"
+        android:icon="@drawable/ic_helper_selector"
+        android:title="Помощник" />
+
+    <item
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_cart_selector"
+        android:title="Корзина" />
+
+    <item
+        android:id="@+id/nav_user"
+        android:icon="@drawable/ic_user_selector"
+        android:title="Профиль" />
+
+</menu>

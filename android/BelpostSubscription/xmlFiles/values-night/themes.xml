@@ -1,0 +1,60 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Philatelia" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="bottomNavigationStyle">@style/CustomBottomNavigationView</item>
+
+        <!-- Design system colors -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryContainer">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primaryDark</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="android:colorBackground">@color/surface</item>
+
+        <!-- Component styles -->
+        <item name="toolbarStyle">@style/PhilateliaToolbar</item>
+        <item name="buttonStyle">@style/PhilateliaButton</item>
+        <item name="editTextStyle">@style/PhilateliaEditText</item>
+        <item name="cardViewStyle">@style/PhilateliaCardView</item>
+
+        <!-- Настраиваем тёмные иконки и текст на статус-баре -->
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="BottomNavigationViewStyle">
+        <item name="itemIconTint">@color/bottom_nav_color_selector</item>
+        <item name="itemTextColor">@color/bottom_nav_color_selector</item>
+    </style>
+    <style name="TextAppearance.BottomNavigation.Active" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.BottomNavigation.Inactive" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="Widget.MaterialComponents.BottomNavigationView.Colored" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemBackground">@null</item>
+    </style>
+    <style name="CustomBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemBackground">@null</item> <!-- Убираем фон (овал) -->
+        <item name="itemIconTint">@color/bottom_nav_color_selector</item>
+        <item name="itemTextColor">@color/bottom_nav_color_selector</item>
+    </style>
+    <style name="FragmentContainerStyle">
+        <item name="android:background">#FFFFFF</item>
+    </style>
+    <style name="CircleShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Theme.Philatelia" parent="Base.Theme.Philatelia" />
+</resources>
