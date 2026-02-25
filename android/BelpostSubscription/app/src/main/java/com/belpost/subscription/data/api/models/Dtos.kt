@@ -39,3 +39,11 @@ data class SubscriptionResponseDto(
     val totalPrice: Double
 )
 
+data class UserProfileDto(
+    val id: Long?,
+    val fullName: String?,
+    val phone: String?,
+    val email: String?
+)
+
+

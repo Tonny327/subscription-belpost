@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,17 +15,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.belpost.subscription.R
 import com.belpost.subscription.data.api.models.PublicationDto
 
 @Composable
 fun PublicationList(
     publications: List<PublicationDto>,
-    onItemClick: (PublicationDto) -> Unit
+    onItemClick: (PublicationDto) -> Unit,
+    onAddToCart: (PublicationDto) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -35,7 +40,8 @@ fun PublicationList(
         items(publications) { publication ->
             PublicationCard(
                 publication = publication,
-                onClick = { onItemClick(publication) }
+                onClick = { onItemClick(publication) },
+                onAddToCart = { onAddToCart(publication) }
             )
         }
     }
@@ -44,7 +50,8 @@ fun PublicationList(
 @Composable
 fun PublicationCard(
     publication: PublicationDto,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onAddToCart: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -59,6 +66,18 @@ fun PublicationCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            AsyncImage(
+                model = publication.imageUrl,
+                contentDescription = publication.title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.ic_publication_placeholder),
+                error = painterResource(id = R.drawable.ic_publication_placeholder),
+                fallback = painterResource(id = R.drawable.ic_publication_placeholder)
+            )
+
             val regionOrCategory = publication.categoryNames?.firstOrNull()
             if (!regionOrCategory.isNullOrBlank()) {
                 Text(
@@ -105,11 +124,9 @@ fun PublicationCard(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Text(
-                    text = "стр. 11",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                TextButton(onClick = onAddToCart) {
+                    Text(text = "В корзину")
+                }
             }
         }
     }

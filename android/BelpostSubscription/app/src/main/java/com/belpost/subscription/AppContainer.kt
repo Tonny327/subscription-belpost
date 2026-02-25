@@ -7,7 +7,10 @@ import com.belpost.subscription.data.api.RetrofitClient
 import com.belpost.subscription.data.repository.CategoryRepository
 import com.belpost.subscription.data.repository.PublicationRepository
 import com.belpost.subscription.data.repository.SubscriptionRepository
+import com.belpost.subscription.data.repository.UserRepository
+import com.belpost.subscription.presentation.viewmodel.CartViewModel
 import com.belpost.subscription.presentation.viewmodel.MainViewModel
+import com.belpost.subscription.presentation.viewmodel.ProfileViewModel
 import com.belpost.subscription.presentation.viewmodel.SubscriptionViewModel
 
 class AppContainer {
@@ -17,6 +20,7 @@ class AppContainer {
     private val publicationRepository by lazy { PublicationRepository(apiService) }
     private val categoryRepository by lazy { CategoryRepository(apiService) }
     private val subscriptionRepository by lazy { SubscriptionRepository(apiService) }
+    private val userRepository by lazy { UserRepository(apiService) }
 
     val mainViewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -33,6 +37,26 @@ class AppContainer {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(SubscriptionViewModel::class.java)) {
                 return SubscriptionViewModel(subscriptionRepository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+        }
+    }
+
+    val cartViewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(CartViewModel::class.java)) {
+                return CartViewModel(subscriptionRepository) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+        }
+    }
+
+    val profileViewModelFactory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+                return ProfileViewModel(userRepository, subscriptionRepository) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

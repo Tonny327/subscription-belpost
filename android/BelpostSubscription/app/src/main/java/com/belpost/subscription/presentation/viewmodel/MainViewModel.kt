@@ -26,6 +26,10 @@ class MainViewModel(
 
     private var selectedType: String? = null
     private var selectedAudienceCategory: CategoryDto? = null
+    private var rootCategories: List<CategoryDto> = emptyList()
+
+    private var currentType: String? = null
+    private var currentCategoryId: Long? = null
 
     init {
         loadPublications(type = null, categoryId = null)
@@ -35,12 +39,18 @@ class MainViewModel(
         viewModelScope.launch {
             _publicationsState.value = UiState.Loading
             try {
+                currentType = type
+                currentCategoryId = categoryId
                 val publications = publicationRepository.getPublications(type, categoryId)
                 _publicationsState.value = UiState.Success(publications)
             } catch (e: Exception) {
                 _publicationsState.value = UiState.Error(e.message ?: "Ошибка загрузки изданий")
             }
         }
+    }
+
+    fun refreshPublications() {
+        loadPublications(currentType, currentCategoryId)
     }
 
     fun openHelp() {
@@ -51,20 +61,42 @@ class MainViewModel(
         _helpStep.value = null
         selectedType = null
         selectedAudienceCategory = null
+        rootCategories = emptyList()
     }
 
     fun selectType(type: String) {
         selectedType = type
         viewModelScope.launch {
             try {
-                val rootCategories = categoryRepository.getTopCategories()
+                rootCategories = categoryRepository.getTopCategories()
                 _helpStep.value = HelpStep.SelectAudience(type = type)
-                // аудитории выбираем из rootCategories на UI‑уровне
             } catch (e: Exception) {
                 // при ошибке просто закрываем помощник и показываем ошибку загрузки публикаций
                 _helpStep.value = null
             }
         }
+    }
+
+    private fun findAdultCategory(): CategoryDto? {
+        if (rootCategories.isEmpty()) return null
+        return rootCategories.firstOrNull { it.name.contains("взрос", ignoreCase = true) }
+            ?: rootCategories.firstOrNull()
+    }
+
+    private fun findChildCategory(): CategoryDto? {
+        if (rootCategories.isEmpty()) return null
+        return rootCategories.firstOrNull { it.name.contains("дет", ignoreCase = true) }
+            ?: rootCategories.getOrNull(1)
+    }
+
+    fun selectAdultAudience() {
+        val category = findAdultCategory() ?: return
+        selectAudienceCategory(category)
+    }
+
+    fun selectChildAudience() {
+        val category = findChildCategory() ?: return
+        selectAudienceCategory(category)
     }
 
     fun selectAudienceCategory(category: CategoryDto) {
@@ -83,6 +115,15 @@ class MainViewModel(
                 _helpStep.value = null
             }
         }
+    }
+
+    fun backToType() {
+        _helpStep.value = HelpStep.SelectType
+    }
+
+    fun backToAudience() {
+        val type = selectedType ?: return
+        _helpStep.value = HelpStep.SelectAudience(type = type)
     }
 
     fun selectThemeCategory(category: CategoryDto) {

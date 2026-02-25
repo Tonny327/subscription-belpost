@@ -4,6 +4,7 @@ import com.belpost.subscription.data.api.models.CategoryDto
 import com.belpost.subscription.data.api.models.PublicationDto
 import com.belpost.subscription.data.api.models.SubscriptionRequestDto
 import com.belpost.subscription.data.api.models.SubscriptionResponseDto
+import com.belpost.subscription.data.api.models.UserProfileDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -29,6 +30,27 @@ interface ApiService {
     @POST("/api/subscriptions")
     suspend fun createSubscription(
         @Body request: SubscriptionRequestDto
+    ): SubscriptionResponseDto
+
+    @GET("/api/users/{id}")
+    suspend fun getUser(
+        @Path("id") id: Long
+    ): UserProfileDto
+
+    @POST("/api/users/{id}")
+    suspend fun updateUser(
+        @Path("id") id: Long,
+        @Body profile: UserProfileDto
+    ): UserProfileDto
+
+    @GET("/api/subscriptions/{id}")
+    suspend fun getUserSubscriptions(
+        @Path("id") id: Long
+    ): List<SubscriptionResponseDto>
+
+    @POST("/api/subscriptions/{id}/cancel")
+    suspend fun cancelSubscription(
+        @Path("id") id: Long
     ): SubscriptionResponseDto
 }
 
