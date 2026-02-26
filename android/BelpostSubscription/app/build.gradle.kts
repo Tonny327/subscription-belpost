@@ -74,6 +74,7 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.accompanist.swiperefresh)
+    implementation(libs.datastore.preferences)
 
     testImplementation(libs.junit)
     testImplementation("app.cash.turbine:turbine:1.1.0")

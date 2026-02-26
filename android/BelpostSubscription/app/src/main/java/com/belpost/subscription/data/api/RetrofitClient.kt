@@ -10,11 +10,11 @@ import java.util.concurrent.TimeUnit
 
 object NetworkConfig {
     /**
-     * Базовый URL бэкенда.
+     * Базовый URL продакшн‑бэкенда.
      * ВАЖНО: для Retrofit URL должен заканчиваться слешем.
-     * Для реального устройства используется IP машины с backend'ом.
      */
-    const val BASE_URL: String = "http://192.168.0.4:8082/"
+    const val BASE_URL: String = "https://subscription-belpost-production.up.railway.app/"
+    //const val BASE_URL: String = "http://192.168.0.4:8082"
 }
 
 object RetrofitClient {

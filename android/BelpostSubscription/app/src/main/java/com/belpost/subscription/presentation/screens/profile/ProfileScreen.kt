@@ -44,7 +44,9 @@ import com.belpost.subscription.utils.UiState
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    isLoggedIn: Boolean,
+    onNavigateToLogin: () -> Unit
 ) {
     val profileState by viewModel.userProfileState.collectAsState()
     val historyState by viewModel.subscriptionHistoryState.collectAsState()
@@ -55,9 +57,11 @@ fun ProfileScreen(
     val phoneState = remember { mutableStateOf(TextFieldValue("")) }
     val emailState = remember { mutableStateOf(TextFieldValue("")) }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadUserProfile()
-        viewModel.loadSubscriptionHistory()
+    LaunchedEffect(isLoggedIn) {
+        if (isLoggedIn) {
+            viewModel.loadUserProfile()
+            viewModel.loadSubscriptionHistory()
+        }
     }
 
     LaunchedEffect(profileState) {
@@ -100,6 +104,15 @@ fun ProfileScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            if (!isLoggedIn) {
+                Text(text = "Войдите в аккаунт для доступа к личному кабинету")
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = onNavigateToLogin
+                ) {
+                    Text("Войти / Зарегистрироваться")
+                }
+            } else {
             Text(text = "Профиль")
 
             when (profileState) {
@@ -127,17 +140,25 @@ fun ProfileScreen(
                         label = { Text("Email") }
                     )
 
-                    Button(
-                        onClick = {
-                            viewModel.updateUserProfile(
-                                fullName = nameState.value.text,
-                                phone = phoneState.value.text,
-                                email = emailState.value.text
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(text = "Сохранить изменения")
+                        Button(
+                            onClick = {
+                                viewModel.updateUserProfile(
+                                    fullName = nameState.value.text,
+                                    phone = phoneState.value.text,
+                                    email = emailState.value.text
+                                )
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(text = "Сохранить")
+                        }
+                        TextButton(onClick = { viewModel.logout() }) {
+                            Text(text = "Выйти")
+                        }
                     }
                 }
 
@@ -179,6 +200,7 @@ fun ProfileScreen(
                 is UiState.Error -> {
                     Text(text = "Не удалось загрузить историю подписок")
                 }
+            }
             }
         }
     }

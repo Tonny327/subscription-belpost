@@ -1,6 +1,7 @@
 package com.belpost.subscription.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -10,11 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.belpost.subscription.LocalAppContainer
+import com.belpost.subscription.presentation.screens.auth.LoginScreen
+import com.belpost.subscription.presentation.screens.auth.RegisterScreen
 import com.belpost.subscription.presentation.screens.cart.CartScreen
 import com.belpost.subscription.presentation.screens.detail.DetailScreen
 import com.belpost.subscription.presentation.screens.main.MainScreen
 import com.belpost.subscription.presentation.screens.profile.ProfileScreen
 import com.belpost.subscription.presentation.screens.success.SuccessScreen
+import com.belpost.subscription.presentation.viewmodel.AuthViewModel
 import com.belpost.subscription.presentation.viewmodel.CartViewModel
 import com.belpost.subscription.presentation.viewmodel.MainViewModel
 import com.belpost.subscription.presentation.viewmodel.ProfileViewModel
@@ -22,6 +26,8 @@ import com.belpost.subscription.presentation.viewmodel.SubscriptionViewModel
 import com.google.gson.Gson
 
 sealed class Screen(val route: String) {
+    object Login : Screen("login")
+    object Register : Screen("register")
     object Main : Screen("main")
     object Detail : Screen("detail/{publicationJson}") {
         fun createRoute(publicationJson: String) = "detail/$publicationJson"
@@ -39,11 +45,46 @@ fun BelpostNavHost(
 ) {
     val appContainer = LocalAppContainer.current
     val gson = remember { Gson() }
+    val isLoggedIn by appContainer.isLoggedInFlow().collectAsState(initial = false)
+
+    LaunchedEffect(isLoggedIn) {
+        if (isLoggedIn && navController.currentBackStackEntry?.destination?.route == Screen.Login.route) {
+            navController.navigate(Screen.Main.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
         startDestination = Screen.Main.route
     ) {
+        composable(Screen.Login.route) {
+            val authViewModel: AuthViewModel = viewModel(factory = appContainer.authViewModelFactory)
+            LoginScreen(
+                viewModel = authViewModel,
+                onLoginSuccess = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onNavigateToRegister = { navController.navigate(Screen.Register.route) }
+            )
+        }
+
+        composable(Screen.Register.route) {
+            val authViewModel: AuthViewModel = viewModel(factory = appContainer.authViewModelFactory)
+            RegisterScreen(
+                viewModel = authViewModel,
+                onRegisterSuccess = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable(Screen.Main.route) { backStackEntry ->
             val mainViewModel: MainViewModel = viewModel(
                 viewModelStoreOwner = backStackEntry,
@@ -142,7 +183,9 @@ fun BelpostNavHost(
             )
             ProfileScreen(
                 viewModel = profileViewModel,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                isLoggedIn = isLoggedIn,
+                onNavigateToLogin = { navController.navigate(Screen.Login.route) }
             )
         }
     }

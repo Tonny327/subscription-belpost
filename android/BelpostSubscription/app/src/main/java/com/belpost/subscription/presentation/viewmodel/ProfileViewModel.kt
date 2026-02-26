@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.belpost.subscription.data.api.models.SubscriptionResponseDto
 import com.belpost.subscription.data.api.models.UserProfileDto
+import com.belpost.subscription.data.repository.AuthRepository
 import com.belpost.subscription.data.repository.SubscriptionRepository
 import com.belpost.subscription.data.repository.UserRepository
 import com.belpost.subscription.utils.UiState
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val userRepository: UserRepository,
-    private val subscriptionRepository: SubscriptionRepository
+    private val subscriptionRepository: SubscriptionRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _userProfileState: MutableStateFlow<UiState<UserProfileDto>> =
@@ -75,6 +77,12 @@ class ProfileViewModel(
                 _subscriptionHistoryState.value =
                     UiState.Error(e.message ?: "Ошибка загрузки подписок")
             }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            authRepository.logout()
         }
     }
 

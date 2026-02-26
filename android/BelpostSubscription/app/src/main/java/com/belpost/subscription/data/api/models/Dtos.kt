@@ -1,5 +1,7 @@
 package com.belpost.subscription.data.api.models
 
+import com.google.gson.annotations.SerializedName
+
 data class CategoryDto(
     val id: Long,
     val name: String,
@@ -44,6 +46,57 @@ data class UserProfileDto(
     val fullName: String?,
     val phone: String?,
     val email: String?
+)
+
+data class UserRegisterRequest(
+    val fullName: String,
+    val email: String,
+    val phone: String,
+    val password: String
+)
+
+data class UserLoginRequest(
+    val email: String,
+    val password: String
+)
+
+data class LoginResponse(
+    val id: Long? = null,
+    val userId: Long? = null,
+    val token: String? = null,
+    val fullName: String? = null,
+    val email: String? = null
+) {
+    fun effectiveUserId(): Long = id ?: userId ?: error("LoginResponse must have id or userId")
+}
+
+data class CreateOrGetCartRequest(
+    val userId: Long? = null,
+    val cartToken: String? = null
+)
+
+data class AddCartItemRequest(
+    val publicationId: Long,
+    val period: String,
+    val quantity: Int = 1,
+    val cartId: Long? = null,
+    val cartToken: String? = null
+)
+
+data class CartItemDto(
+    val id: Long,
+    val publicationId: Long,
+    val publication: PublicationDto? = null,
+    val period: String,
+    val quantity: Int,
+    val totalPrice: Double
+)
+
+data class CartDto(
+    val id: Long,
+    val userId: Long? = null,
+    val cartToken: String? = null,
+    val items: List<CartItemDto> = emptyList()
 )
 
 

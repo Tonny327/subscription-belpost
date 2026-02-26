@@ -2,26 +2,34 @@ package com.belpost.subscription.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.belpost.subscription.data.api.models.CartItemDto
+import com.belpost.subscription.data.api.models.PublicationDto
 import com.belpost.subscription.data.api.models.SubscriptionRequestDto
-import com.belpost.subscription.data.repository.SubscriptionRepository
+import com.belpost.subscription.data.repository.CartRepositoryApi
+import com.belpost.subscription.data.repository.SubscriptionRepositoryApi
 import com.belpost.subscription.presentation.cart.CartItem
 import com.belpost.subscription.presentation.subscription.SubscriptionPeriod
-import com.belpost.subscription.presentation.subscription.calculateSubscriptionPrice
 import com.belpost.subscription.utils.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CartViewModel(
-    private val subscriptionRepository: SubscriptionRepository
+    private val cartRepository: CartRepositoryApi,
+    private val subscriptionRepository: SubscriptionRepositoryApi
 ) : ViewModel() {
 
     private val _items = MutableStateFlow<List<CartItem>>(emptyList())
     val items: StateFlow<List<CartItem>> = _items.asStateFlow()
+
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState: StateFlow<Boolean> = _loadingState.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     val totalPrice: StateFlow<Double> = _items
         .map { list -> list.sumOf { it.calculatedPrice } }
@@ -38,40 +46,72 @@ class CartViewModel(
         _checkoutState.value = null
     }
 
-    fun addToCart(publication: com.belpost.subscription.data.api.models.PublicationDto, period: SubscriptionPeriod) {
-        val price = calculateSubscriptionPrice(publication.price, period)
-        _items.update { current ->
-            val existingIndex = current.indexOfFirst { it.publication.id == publication.id }
-            if (existingIndex >= 0) {
-                val updated = current.toMutableList()
-                updated[existingIndex] = current[existingIndex].copy(
-                    selectedPeriod = period,
-                    calculatedPrice = price
-                )
-                updated
-            } else {
-                current + CartItem(
-                    publication = publication,
-                    selectedPeriod = period,
-                    calculatedPrice = price
-                )
+    fun clearError() {
+        _errorMessage.value = null
+    }
+
+    init {
+        loadCart()
+    }
+
+    fun loadCart() {
+        viewModelScope.launch {
+            _loadingState.value = true
+            _errorMessage.value = null
+            try {
+                val cart = cartRepository.loadCart()
+                _items.value = cart.items.map { it.toCartItem() }
+            } catch (e: Exception) {
+                _items.value = emptyList()
+                _errorMessage.value = e.message ?: "Ошибка загрузки корзины"
+            } finally {
+                _loadingState.value = false
+            }
+        }
+    }
+
+    fun addToCart(publication: PublicationDto, period: SubscriptionPeriod) {
+        viewModelScope.launch {
+            _loadingState.value = true
+            _errorMessage.value = null
+            try {
+                val cart = cartRepository.addItem(publication.id, period.label)
+                _items.value = cart.items.map { it.toCartItem() }
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "Ошибка добавления в корзину"
+            } finally {
+                _loadingState.value = false
             }
         }
     }
 
     fun removeFromCart(item: CartItem) {
-        _items.update { current -> current.filterNot { it.publication.id == item.publication.id } }
+        viewModelScope.launch {
+            _loadingState.value = true
+            _errorMessage.value = null
+            try {
+                val cart = cartRepository.removeItem(item.id)
+                _items.value = cart.items.map { it.toCartItem() }
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "Ошибка удаления из корзины"
+            } finally {
+                _loadingState.value = false
+            }
+        }
     }
 
     fun updateItemPeriod(item: CartItem, newPeriod: SubscriptionPeriod) {
-        val price = calculateSubscriptionPrice(item.publication.price, newPeriod)
-        _items.update { current ->
-            current.map {
-                if (it.publication.id == item.publication.id) {
-                    it.copy(selectedPeriod = newPeriod, calculatedPrice = price)
-                } else {
-                    it
-                }
+        viewModelScope.launch {
+            _loadingState.value = true
+            _errorMessage.value = null
+            try {
+                cartRepository.removeItem(item.id)
+                val cart = cartRepository.addItem(item.publication.id, newPeriod.label)
+                _items.value = cart.items.map { it.toCartItem() }
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "Ошибка изменения периода"
+            } finally {
+                _loadingState.value = false
             }
         }
     }
@@ -98,6 +138,9 @@ class CartViewModel(
                     )
                     subscriptionRepository.createSubscription(request)
                 }
+                cartRepository.loadCart().items.forEach { cartItem ->
+                    cartRepository.removeItem(cartItem.id)
+                }
                 _items.value = emptyList()
                 _checkoutState.value = UiState.Success(Unit)
             } catch (e: Exception) {
@@ -107,3 +150,14 @@ class CartViewModel(
     }
 }
 
+private fun CartItemDto.toCartItem(): CartItem {
+    val periodEnum = SubscriptionPeriod.fromLabel(period) ?: SubscriptionPeriod.ONE_MONTH
+    val pub = publication ?: throw IllegalStateException("Cart item must have publication")
+    val price = totalPrice / quantity
+    return CartItem(
+        id = id,
+        publication = pub,
+        selectedPeriod = periodEnum,
+        calculatedPrice = price
+    )
+}

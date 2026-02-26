@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,7 +49,16 @@ fun CartScreen(
     val items by viewModel.items.collectAsState()
     val totalPrice by viewModel.totalPrice.collectAsState()
     val checkoutState by viewModel.checkoutState.collectAsState()
+    val loadingState by viewModel.loadingState.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     val snackbarState: RememberSnackbarState = rememberSnackbarState()
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { msg ->
+            snackbarState.showMessage(msg)
+            viewModel.clearError()
+        }
+    }
 
     val nameState = remember { mutableStateOf(TextFieldValue("")) }
     val phoneState = remember { mutableStateOf(TextFieldValue("")) }
@@ -156,7 +166,7 @@ fun CartScreen(
                 }
             }
 
-            if (checkoutState is UiState.Loading) {
+            if (checkoutState is UiState.Loading || loadingState) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -178,11 +188,25 @@ private fun CartItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(text = item.publication.title)
-        Text(text = "Период: ${item.selectedPeriod.label}")
-        Text(text = "Стоимость: ${"%.2f".format(item.calculatedPrice)} руб.")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = item.publication.title)
+                Text(text = "Период: ${item.selectedPeriod.label}")
+                Text(text = "Стоимость: ${"%.2f".format(item.calculatedPrice)} руб.")
+            }
+            IconButton(onClick = onRemove) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Удалить"
+                )
+            }
+        }
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -194,10 +218,6 @@ private fun CartItemRow(
                 ) {
                     Text(text = period.label)
                 }
-            }
-
-            TextButton(onClick = onRemove) {
-                Text(text = "Удалить")
             }
         }
     }
