@@ -42,6 +42,7 @@ class SessionManager(private val context: Context) {
         context.dataStore.edit { prefs ->
             prefs.remove(Keys.USER_ID)
             prefs.remove(Keys.AUTH_TOKEN)
+            prefs.remove(Keys.CART_ID)
         }
     }
 

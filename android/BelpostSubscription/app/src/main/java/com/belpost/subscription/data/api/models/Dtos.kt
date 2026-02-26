@@ -62,13 +62,16 @@ data class UserLoginRequest(
 
 data class LoginResponse(
     val id: Long? = null,
-    val userId: Long? = null,
+    @SerializedName(value = "userId", alternate = ["user_id"]) val userId: Long? = null,
     val token: String? = null,
     val fullName: String? = null,
-    val email: String? = null
+    val email: String? = null,
+    val user: LoginResponseUser? = null
 ) {
-    fun effectiveUserId(): Long = id ?: userId ?: error("LoginResponse must have id or userId")
+    fun effectiveUserId(): Long = id ?: userId ?: user?.id ?: error("В ответе сервера нет id пользователя. API логина должен возвращать поле id, userId или user.id.")
 }
+
+data class LoginResponseUser(val id: Long? = null)
 
 data class CreateOrGetCartRequest(
     val userId: Long? = null,

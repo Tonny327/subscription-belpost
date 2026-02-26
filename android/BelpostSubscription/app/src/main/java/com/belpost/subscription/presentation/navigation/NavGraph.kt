@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import kotlinx.coroutines.flow.first
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,17 +48,32 @@ fun BelpostNavHost(
     val gson = remember { Gson() }
     val isLoggedIn by appContainer.isLoggedInFlow().collectAsState(initial = false)
 
-    LaunchedEffect(isLoggedIn) {
-        if (isLoggedIn && navController.currentBackStackEntry?.destination?.route == Screen.Login.route) {
+    // Один раз при запуске: если есть сохранённая сессия — переходим на Main (автовход).
+    LaunchedEffect(Unit) {
+        val hasSession = appContainer.isLoggedInFlow().first()
+        if (hasSession) {
             navController.navigate(Screen.Main.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
         }
     }
 
+    // При выходе из аккаунта — возврат на экран входа.
+    LaunchedEffect(isLoggedIn) {
+        if (!isLoggedIn) {
+            navController.currentBackStackEntry?.destination?.route?.let { route ->
+                if (route != Screen.Login.route && route != Screen.Register.route) {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Main.route) { inclusive = true }
+                    }
+                }
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Main.route
+        startDestination = Screen.Login.route
     ) {
         composable(Screen.Login.route) {
             val authViewModel: AuthViewModel = viewModel(factory = appContainer.authViewModelFactory)
