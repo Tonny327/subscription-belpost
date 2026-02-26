@@ -1,9 +1,37 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: subscriptiondb
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: appsecret
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d subscriptiondb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build: ./backend/subscription-service
     image: subscription-service
     ports:
       - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/subscriptiondb
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: appsecret
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_H2_CONSOLE_ENABLED: "false"
+      SPRING_JPA_SHOW_SQL: "false"
+    depends_on:
+      db:
+        condition: service_healthy
 
+volumes:
+  postgres_data:
