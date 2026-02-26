@@ -5,12 +5,14 @@ import by.belpost.subscription_service.dto.SubscriptionRequestDto;
 import by.belpost.subscription_service.dto.SubscriptionResponseDto;
 import by.belpost.subscription_service.entity.Publication;
 import by.belpost.subscription_service.entity.Subscription;
+import by.belpost.subscription_service.entity.User;
 import by.belpost.subscription_service.enums.SubscriptionStatus;
 import by.belpost.subscription_service.exception.InvalidSubscriptionPeriodException;
 import by.belpost.subscription_service.exception.PublicationNotFoundException;
 import by.belpost.subscription_service.exception.SubscriptionNotFoundException;
 import by.belpost.subscription_service.repository.PublicationRepository;
 import by.belpost.subscription_service.repository.SubscriptionRepository;
+import by.belpost.subscription_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final PublicationRepository publicationRepository;
+    private final UserRepository userRepository;
 
     public SubscriptionResponseDto createSubscription(SubscriptionRequestDto request) {
         Publication publication = publicationRepository.findById(request.getPublicationId())
@@ -43,8 +46,11 @@ public class SubscriptionService {
         LocalDate endDate = startDate.plusMonths(months);
         Double totalPrice = publication.getPrice() * months * discountMultiplier;
 
+        User user = userRepository.findById(1L).orElse(null);
+
         Subscription subscription = Subscription.builder()
                 .publication(publication)
+                .user(user)
                 .customerName(request.getCustomerName())
                 .customerPhone(request.getCustomerPhone())
                 .customerEmail(request.getCustomerEmail())
@@ -62,6 +68,25 @@ public class SubscriptionService {
     public SubscriptionResponseDto getById(Long id) {
         Subscription subscription = subscriptionRepository.findById(id)
                 .orElseThrow(() -> new SubscriptionNotFoundException(id));
+        return toResponseDto(subscription);
+    }
+
+    public List<SubscriptionResponseDto> getSubscriptionsForUser(Long userId) {
+        List<Subscription> subscriptions = subscriptionRepository.findByUserId(userId);
+        return subscriptions.stream()
+                .map(this::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public SubscriptionResponseDto cancelSubscription(Long subscriptionId) {
+        Subscription subscription = subscriptionRepository.findById(subscriptionId)
+                .orElseThrow(() -> new SubscriptionNotFoundException(subscriptionId));
+
+        if (subscription.getStatus() == SubscriptionStatus.ACTIVE) {
+            subscription.setStatus(SubscriptionStatus.CANCELLED);
+            subscription = subscriptionRepository.save(subscription);
+        }
+
         return toResponseDto(subscription);
     }
 

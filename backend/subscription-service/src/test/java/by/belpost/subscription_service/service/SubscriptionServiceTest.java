@@ -11,6 +11,7 @@ import by.belpost.subscription_service.exception.PublicationNotFoundException;
 import by.belpost.subscription_service.exception.SubscriptionNotFoundException;
 import by.belpost.subscription_service.repository.PublicationRepository;
 import by.belpost.subscription_service.repository.SubscriptionRepository;
+import by.belpost.subscription_service.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +36,9 @@ class SubscriptionServiceTest {
 
     @Mock
     private PublicationRepository publicationRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private SubscriptionService subscriptionService;
@@ -150,6 +154,70 @@ class SubscriptionServiceTest {
         assertThatThrownBy(() -> subscriptionService.getById(5L))
                 .isInstanceOf(SubscriptionNotFoundException.class)
                 .hasMessageContaining("Subscription not found");
+    }
+
+    @Test
+    void getSubscriptionsForUser_returnsMappedList() {
+        Publication publication = Publication.builder()
+                .id(1L)
+                .title("Тест")
+                .price(10.0)
+                .period("1 месяц")
+                .type(PublicationType.JOURNAL)
+                .build();
+
+        Subscription subscription = Subscription.builder()
+                .id(5L)
+                .publication(publication)
+                .customerName("Имя")
+                .customerPhone("+375291234567")
+                .customerEmail("test@example.com")
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(1))
+                .period("1 месяц")
+                .totalPrice(10.0)
+                .status(SubscriptionStatus.ACTIVE)
+                .build();
+
+        when(subscriptionRepository.findByUserId(1L)).thenReturn(java.util.List.of(subscription));
+
+        java.util.List<SubscriptionResponseDto> result = subscriptionService.getSubscriptionsForUser(1L);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getId()).isEqualTo(5L);
+        assertThat(result.get(0).getPublication().getId()).isEqualTo(1L);
+    }
+
+    @Test
+    void cancelSubscription_activeSubscription_changesStatusToCancelled() {
+        Publication publication = Publication.builder()
+                .id(1L)
+                .title("Тест")
+                .price(10.0)
+                .period("1 месяц")
+                .type(PublicationType.JOURNAL)
+                .build();
+
+        Subscription subscription = Subscription.builder()
+                .id(5L)
+                .publication(publication)
+                .customerName("Имя")
+                .customerPhone("+375291234567")
+                .customerEmail("test@example.com")
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(1))
+                .period("1 месяц")
+                .totalPrice(10.0)
+                .status(SubscriptionStatus.ACTIVE)
+                .build();
+
+        when(subscriptionRepository.findById(5L)).thenReturn(Optional.of(subscription));
+        when(subscriptionRepository.save(any(Subscription.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        SubscriptionResponseDto response = subscriptionService.cancelSubscription(5L);
+
+        assertThat(response.getStatus()).isEqualTo(SubscriptionStatus.CANCELLED);
+        verify(subscriptionRepository).save(any(Subscription.class));
     }
 
     private void assertPeriod(LocalDate start, String periodString, int expectedMonths, double expectedTotal) {

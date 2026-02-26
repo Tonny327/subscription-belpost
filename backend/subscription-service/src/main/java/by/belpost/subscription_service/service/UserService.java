@@ -4,6 +4,7 @@ import by.belpost.subscription_service.dto.LoginResponse;
 import by.belpost.subscription_service.dto.SubscriptionResponseDto;
 import by.belpost.subscription_service.dto.UserDto;
 import by.belpost.subscription_service.dto.UserLoginRequest;
+import by.belpost.subscription_service.dto.UserProfileDto;
 import by.belpost.subscription_service.dto.UserRegisterRequest;
 import by.belpost.subscription_service.dto.UserWithSubscriptionsDto;
 import by.belpost.subscription_service.entity.Subscription;
@@ -62,6 +63,25 @@ public class UserService {
                 .build();
     }
 
+    public UserProfileDto getUserProfile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+        return toProfileDto(user);
+    }
+
+    public UserProfileDto updateUserProfile(Long userId, UserProfileDto dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        user.setFullName(dto.getFullName());
+        user.setPhone(dto.getPhone());
+        user.setEmail(dto.getEmail());
+        user.setUpdatedAt(Instant.now());
+
+        User saved = userRepository.save(user);
+        return toProfileDto(saved);
+    }
+
     public UserWithSubscriptionsDto getUserWithSubscriptions(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -74,6 +94,15 @@ public class UserService {
         return UserWithSubscriptionsDto.builder()
                 .user(toDto(user))
                 .subscriptions(subscriptionDtos)
+                .build();
+    }
+
+    private UserProfileDto toProfileDto(User user) {
+        return UserProfileDto.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .phone(user.getPhone())
+                .email(user.getEmail())
                 .build();
     }
 

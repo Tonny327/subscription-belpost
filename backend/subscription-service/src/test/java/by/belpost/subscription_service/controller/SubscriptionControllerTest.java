@@ -14,8 +14,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -94,19 +96,36 @@ class SubscriptionControllerTest {
     }
 
     @Test
-    void getSubscription_returnsResponse() throws Exception {
+    void getUserSubscriptions_returnsList() throws Exception {
         SubscriptionResponseDto response = SubscriptionResponseDto.builder()
                 .id(5L)
                 .customerName("Иван Петров")
                 .status(SubscriptionStatus.ACTIVE)
                 .build();
 
-        when(subscriptionService.getById(5L)).thenReturn(response);
+        when(subscriptionService.getSubscriptionsForUser(1L)).thenReturn(List.of(response));
 
-        mockMvc.perform(get("/api/subscriptions/5"))
+        mockMvc.perform(get("/api/subscriptions/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id", is(5)))
+                .andExpect(jsonPath("$[0].customerName", is("Иван Петров")));
+    }
+
+    @Test
+    void cancelSubscription_returnsUpdatedSubscription() throws Exception {
+        SubscriptionResponseDto response = SubscriptionResponseDto.builder()
+                .id(5L)
+                .customerName("Иван Петров")
+                .status(SubscriptionStatus.CANCELLED)
+                .build();
+
+        when(subscriptionService.cancelSubscription(5L)).thenReturn(response);
+
+        mockMvc.perform(post("/api/subscriptions/5/cancel"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(5)))
-                .andExpect(jsonPath("$.customerName", is("Иван Петров")));
+                .andExpect(jsonPath("$.status", is("CANCELLED")));
     }
 }
 

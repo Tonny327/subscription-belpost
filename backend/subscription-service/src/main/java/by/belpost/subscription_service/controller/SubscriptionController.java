@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/subscriptions")
 @RequiredArgsConstructor
@@ -25,8 +27,13 @@ public class SubscriptionController {
     }
 
     @GetMapping("/{id}")
-    public SubscriptionResponseDto getSubscription(@PathVariable Long id) {
-        return subscriptionService.getById(id);
+    public List<SubscriptionResponseDto> getUserSubscriptions(@PathVariable Long id) {
+        return subscriptionService.getSubscriptionsForUser(id);
+    }
+
+    @PostMapping("/{id}/cancel")
+    public SubscriptionResponseDto cancelSubscription(@PathVariable Long id) {
+        return subscriptionService.cancelSubscription(id);
     }
 }
 

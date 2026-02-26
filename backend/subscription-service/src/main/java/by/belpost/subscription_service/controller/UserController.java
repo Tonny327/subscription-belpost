@@ -3,8 +3,8 @@ package by.belpost.subscription_service.controller;
 import by.belpost.subscription_service.dto.LoginResponse;
 import by.belpost.subscription_service.dto.UserDto;
 import by.belpost.subscription_service.dto.UserLoginRequest;
+import by.belpost.subscription_service.dto.UserProfileDto;
 import by.belpost.subscription_service.dto.UserRegisterRequest;
-import by.belpost.subscription_service.dto.UserWithSubscriptionsDto;
 import by.belpost.subscription_service.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserWithSubscriptionsDto getUser(@PathVariable Long id) {
-        return userService.getUserWithSubscriptions(id);
+    public UserProfileDto getUserProfile(@PathVariable Long id) {
+        return userService.getUserProfile(id);
+    }
+
+    @PostMapping("/{id}")
+    public UserProfileDto updateUserProfile(@PathVariable Long id,
+                                            @Valid @RequestBody UserProfileDto body) {
+        return userService.updateUserProfile(id, body);
     }
 }
 
